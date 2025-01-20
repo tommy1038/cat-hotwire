@@ -7,32 +7,52 @@
 <!-- 検索フォーム -->
 <div class="card shadow mt-3">
   <div class="card-header">
-    <%= icon_with_text("search", "検索条件") %>
+    <%= icon_with_text("plus-circle", "新規作成") %>
+    <% if false %>
+      <%= icon_with_text("search", "検索条件") %>
+    <% end %>
   </div>
 
   <div class="card-body">
-    <%= search_form_for(
-      @search,
-      html: {
-        data: {
-          turbo_frame: "cats-list",
-          controller: "form",
-          turbo_action: :advance,
-        }
-      }) do |f| %>
+    <%= bootstrap_form_with(model: Cat.new, data: { action: "" }) do |form| %>
       <div class="row g3 mb-3">
         <div class="col-4 col-xl-2">
-          <%= f.label :name_cont, "名前", class: "form-label" %>
-          <%= f.search_field :name_cont, class: "form-control", data: { action: "input->form#submit" } %>
+          <%= form.text_field :name %>
         </div>
         <div class="col-4 col-xl-2">
-          <%= f.label :age_eq, "年齢", class: "form-label" %>
-          <%= f.search_field :age_eq, class: "form-control", data: { action: "input->form#submit" } %>
+          <%= form.text_field :age %>
         </div>
-        <div class="col-4 d-flex align-items-end">
-          <%= link_to "リセット", cats_path, class: "btn btn-outline-secondary" %>
+        <div class="col-4 d-flex align-items-end mb-3">
+          <%= form.primary %>
         </div>
       </div>
+    <% end%>
+
+    <% if false %>
+      <!-- 以下のコードは、検索フォームの例です -->
+      <%= search_form_for(
+        @search,
+        html: {
+          data: {
+            turbo_frame: "cats-list",
+            controller: "form",
+            turbo_action: :advance,
+          }
+        }) do |f| %>
+        <div class="row g3 mb-3">
+          <div class="col-4 col-xl-2">
+            <%= f.label :name_cont, "名前", class: "form-label" %>
+            <%= f.search_field :name_cont, class: "form-control", data: { action: "input->form#submit" } %>
+          </div>
+          <div class="col-4 col-xl-2">
+            <%= f.label :age_eq, "年齢", class: "form-label" %>
+            <%= f.search_field :age_eq, class: "form-control", data: { action: "input->form#submit" } %>
+          </div>
+          <div class="col-4 d-flex align-items-end">
+            <%= link_to "リセット", cats_path, class: "btn btn-outline-secondary" %>
+          </div>
+        </div>
+      <% end %>
     <% end %>
   </div>
 </div>
