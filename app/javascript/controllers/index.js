@@ -4,11 +4,14 @@
 
 import { application } from "./application"
 
-import FromController from "./form_controller"
-application.register("form", FromController)
+import FormController from "./form_controller"
+application.register("form", FormController)
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
 import ModalController from "./modal_controller"
 application.register("modal", ModalController)
+
+import ToastController from "./toast_controller"
+application.register("toast", ToastController)
