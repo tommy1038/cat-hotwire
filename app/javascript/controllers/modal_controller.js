@@ -24,21 +24,22 @@ export default class extends Controller {
   //   }
   // }
 
-  static targets = ["modal", "nameField", "ageField"];
+  static targets = ["modal", "nameSelect", "ageSelect"];
 
   connect() {
-    this.resetModals(); // モーダルの初期化
+    this.userData = {}; // ユーザーデータの初期化
   }
 
-  start() {
-    this.resetModals(); // モーダルをリセット
-    this.showModal(0);  // 最初のモーダルを表示
+  startFromName(event) {
+    event.preventDefault();
+    this.currentModalIndex = 0; // 現在のモーダルのインデックスを保持
+    this.showModal(0); // 名前選択モーダルを表示
   }
 
-  resetModals() {
-    this.currentModalIndex = 0; // モーダルのインデックスをリセット
-    this.userData = {};         // 入力されたデータをリセット
-    this.hideAllModals();       // すべてのモーダルを非表示にする
+  startFromAge(event) {
+    event.preventDefault();
+    this.currentModalIndex = 1; // 現在のモーダルのインデックスを保持
+    this.showModal(1); // 年齢選択モーダルを表示
   }
 
   showModal(index) {
@@ -55,45 +56,35 @@ export default class extends Controller {
 
   selectName(event) {
     this.userData.name = event.target.dataset.value; // 名前を保存
-    this.updateFormFields(); // フォームに値を更新
-    this.next();
+    this.updateFormFields(); // フォームを更新
+    this.next(); // 次のモーダルを表示
   }
 
   selectAge(event) {
     this.userData.age = event.target.dataset.value; // 年齢を保存
-    this.updateFormFields(); // フォームに値を更新
-    this.next();
+    this.updateFormFields(); // フォームを更新
+    this.close(); // モーダルを閉じる
   }
 
   next() {
     this.currentModalIndex++;
     if (this.currentModalIndex < this.modalTargets.length) {
       this.showModal(this.currentModalIndex);
-
-      // 最後のモーダルならデータを表示
-      if (this.currentModalIndex === this.modalTargets.length - 1) {
-        this.updateResult(); // 結果を表示
-      }
     }
   }
 
   updateFormFields() {
-    // モーダルの値をフォームに反映
-    if (this.nameFieldTarget) {
-      this.nameFieldTarget.value = this.userData.name || ""; // 名前を名前フィールドに
+    // フォームに`userData`の値を反映
+    if (this.nameSelectTarget) {
+      this.nameSelectTarget.value = this.userData.name || ""; // 名前
     }
-    if (this.ageFieldTarget) {
-      this.ageFieldTarget.value = this.userData.age || ""; // 年齢を年齢フィールドに
+    if (this.ageSelectTarget) {
+      this.ageSelectTarget.value = this.userData.age || ""; // 年齢
     }
-  }
-
-  updateResult() {
-    // 結果を表示
-    // const resultText = `名前: ${this.userData.name}, 年齢: ${this.userData.age}`;
-    // this.summaryTarget.textContent = resultText;
   }
 
   close() {
-    this.hideAllModals(); // すべてのモーダルを非表示にする
+    // モーダルを閉じるだけでデータをリセットしない
+    this.hideAllModals();
   }
 }
