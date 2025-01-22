@@ -1,13 +1,13 @@
 <div data-controller="modal">
   <!-- フォーム -->
   <%= form_with model: @cat, local: true do |form| %>
-    <%= form.label :name, "名前" %>
+    <%= form.label :name, "1. 名前は？" %>
     <%= form.select :name,
       [["--選択してください--", ""], ["太郎", "太郎"], ["花子", "花子"], ["次郎", "次郎"], ["三郎", "三郎"]],
       { include_blank: false },
       data: { modal_target: "nameSelect", action: "mousedown->modal#startFromName" } %>
 
-    <%= form.label :age, "年齢" %>
+    <%= form.label :age, "2. 年齢は？" %>
     <%= form.select :age,
       [["--選択してください--", ""], ["10代", "10"], ["20代", "20"], ["30代", "30"], ["40代以上", "40"]],
       { include_blank: false },
@@ -17,28 +17,9 @@
   <% end %>
 
   <!-- モーダル1: 名前選択 -->
-  <div data-modal-target="modal" class="modal">
-    <div class="modal-content">
-      <button data-action="modal#close" class="modal-close-link" aria-label="閉じる">&times;</button>
-      <p>名前を選択してください:</p>
-      <button data-action="modal#selectName" data-value="太郎">太郎</button>
-      <button data-action="modal#selectName" data-value="花子">花子</button>
-      <button data-action="modal#selectName" data-value="次郎">次郎</button>
-      <button data-action="modal#selectName" data-value="三郎">三郎</button>
-    </div>
-  </div>
-
+  <%= render "name_modal" %>
   <!-- モーダル2: 年齢選択 -->
-  <div data-modal-target="modal" class="modal">
-    <div class="modal-content">
-      <button data-action="modal#close" class="modal-close-link" aria-label="閉じる">&times;</button>
-      <p>年齢を選択してください:</p>
-      <button data-action="modal#selectAge" data-value="10">10代</button>
-      <button data-action="modal#selectAge" data-value="20">20代</button>
-      <button data-action="modal#selectAge" data-value="30">30代</button>
-      <button data-action="modal#selectAge" data-value="40">40代以上</button>
-    </div>
-  </div>
+  <%= render "age_modal" %>
 </div>
 
 <% if false %>
