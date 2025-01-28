@@ -1,0 +1,19 @@
+<div class="tabs-container">
+  <!-- タブのボタン -->
+  <div class="tabs">
+    <%= form_with url: switches_path, method: :post, data: { turbo_frame: "tab-content" } do |f| %>
+      <button type="submit" name="switch" value="tab1" class="tab-button">Tab 1</button>
+      <button type="submit" name="switch" value="tab2" class="tab-button">Tab 2</button>
+      <button type="submit" name="switch" value="tab3" class="tab-button">Tab 3</button>
+    <% end %>
+  </div>
+
+  <!-- タブの内容 -->
+  <turbo-frame id="tab-content">
+    <!-- 初期コンテンツ -->
+    <div class="tab-content">
+      <h2>Initial Content</h2>
+      <p>ここに初期コンテンツが表示されます。</p>
+    </div>
+  </turbo-frame>
+</div>
