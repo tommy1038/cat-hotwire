@@ -3,88 +3,74 @@ import { Modal } from "bootstrap"
 
 // Connects to data-controller="modal"
 export default class extends Controller {
-  // // `connect()`はStimulusのライフサイクルコールバックの1つ
-  // // コントローラーがHTML要素にアタッチされた時（=HTML要素が画面に表示された時）に実行される
-  // connect() {
-  //   // モーダル生成
-  //   this.modal = new Modal(this.element)
-
-  //   // モーダルを表示する
-  //   this.modal.show()
-  // }
-
-  // // アクション定義
-  // // 保存成功時にモーダルを閉じる
-  // close(event) {
-  //   // event.detail.successは、レスポンスが成功ならtrueを返す
-  //   // バリデーションエラー時はモーダルを閉じたくないので、成功時のみ閉じる
-  //   if (event.detail.success) {
-  //     // モーダルを閉じる
-  //     this.modal.hide()
-  //   }
-  // }
-
-  static targets = ["modal", "nameSelect", "ageSelect"];
+  static targets = [
+    "modal", "question", "select", "label",
+  ]
 
   connect() {
-    this.userData = {}; // ユーザーデータの初期化
+    this.hiddenModal()
   }
 
-  startFromName(event) {
-    event.preventDefault();
-    this.currentModalIndex = 0; // 現在のモーダルのインデックスを保持
-    this.showModal(0); // 名前選択モーダルを表示
+  startModal(event) {
+    event.preventDefault()
+
+    this.currentModalIndex = Number(event.currentTarget.dataset.buttonNumber)
+    this.showModal()
+    this.createQuestion()
   }
 
-  startFromAge(event) {
-    event.preventDefault();
-    this.currentModalIndex = 1; // 現在のモーダルのインデックスを保持
-    this.showModal(1); // 年齢選択モーダルを表示
+  showModal() {
+    this.modalTarget.style.display = "block"
   }
 
-  showModal(index) {
-    this.modalTargets.forEach((modal, i) => {
-      modal.style.display = i === index ? "block" : "none";
-    });
+  hiddenModal() {
+    this.modalTarget.style.display = "none"
   }
 
-  hideAllModals() {
-    this.modalTargets.forEach((modal) => {
-      modal.style.display = "none";
-    });
+  createQuestion() {
+    // 初期化
+    this.questionTarget.innerHTML = ""
+
+    const options = Array.from(this.selectTargets[this.currentModalIndex].options).map(option => ({
+      text: option.text,
+      value: option.value,
+    }))
+
+    const questionTarget = this.questionTarget
+
+    const question = document.createElement("p")
+    question.textContent = this.labelTargets[this.currentModalIndex].textContent
+
+    questionTarget.appendChild(question)
+
+    options.forEach((option) => {
+      const button = document.createElement("button")
+
+      // `select`メソッドを呼び出すための属性
+      button.setAttribute("data-action", "modal#select")
+      button.setAttribute("data-value", option.value)
+      button.textContent = option.text
+
+      questionTarget.appendChild(button)
+    })
   }
 
-  selectName(event) {
-    this.userData.name = event.target.dataset.value; // 名前を保存
-    this.updateFormFields(); // フォームを更新
-    this.next(); // 次のモーダルを表示
-  }
-
-  selectAge(event) {
-    this.userData.age = event.target.dataset.value; // 年齢を保存
-    this.updateFormFields(); // フォームを更新
-    this.close(); // モーダルを閉じる
+  select(event) {
+    this.selectTargets[this.currentModalIndex].value = event.target.dataset.value || ""
+    this.next()
   }
 
   next() {
-    this.currentModalIndex++;
-    if (this.currentModalIndex < this.modalTargets.length) {
-      this.showModal(this.currentModalIndex);
-    }
-  }
+    this.currentModalIndex++
 
-  updateFormFields() {
-    // フォームに`userData`の値を反映
-    if (this.nameSelectTarget) {
-      this.nameSelectTarget.value = this.userData.name || ""; // 名前
-    }
-    if (this.ageSelectTarget) {
-      this.ageSelectTarget.value = this.userData.age || ""; // 年齢
+    if (this.currentModalIndex < this.labelTargets.length) {
+      this.createQuestion()
+    } else {
+      this.hiddenModal()
     }
   }
 
   close() {
-    // モーダルを閉じるだけでデータをリセットしない
-    this.hideAllModals();
+    this.hiddenModal()
   }
 }

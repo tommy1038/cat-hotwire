@@ -1,25 +1,30 @@
 <div data-controller="modal">
   <!-- フォーム -->
   <%= form_with model: @cat, local: true do |form| %>
-    <%= form.label :name, "1. 名前は？" %>
+    <%= form.label :name, "1. 名前は？", data: { modal_target: "label" } %>
     <%= form.select :name,
       [["--選択してください--", ""], ["太郎", "太郎"], ["花子", "花子"], ["次郎", "次郎"], ["三郎", "三郎"]],
       { include_blank: false },
-      data: { modal_target: "nameSelect", action: "mousedown->modal#startFromName" } %>
+      data: { modal_target: "select", action: "mousedown->modal#startModal", button_number: 0 } %>
 
-    <%= form.label :age, "2. 年齢は？" %>
+    <%= form.label :age, "2. 年齢は？", data: { modal_target: "label" } %>
     <%= form.select :age,
       [["--選択してください--", ""], ["10代", "10"], ["20代", "20"], ["30代", "30"], ["40代以上", "40"]],
       { include_blank: false },
-      data: { modal_target: "ageSelect", action: "mousedown->modal#startFromAge" } %>
+      data: { modal_target: "select", action: "mousedown->modal#startModal", button_number: 1 } %>
 
     <%= form.submit "保存", class: "save-button" %>
   <% end %>
 
-  <!-- モーダル1: 名前選択 -->
-  <%= render "name_modal" %>
-  <!-- モーダル2: 年齢選択 -->
-  <%= render "age_modal" %>
+  <!-- モーダル -->
+  <div data-modal-target="modal" class="modal">
+    <div class="modal-content">
+      <button data-action="modal#close" class="modal-close-link" aria-label="閉じる">&times;</button>
+      <div data-modal-target="question">
+        <!-- 名前の選択肢はここに動的に追加されます -->
+      </div>
+    </div>
+  </div>
 </div>
 
 <% if false %>
