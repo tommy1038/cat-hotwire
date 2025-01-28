@@ -3,24 +3,74 @@ import { Modal } from "bootstrap"
 
 // Connects to data-controller="modal"
 export default class extends Controller {
-  // `connect()`はStimulusのライフサイクルコールバックの1つ
-  // コントローラーがHTML要素にアタッチされた時（=HTML要素が画面に表示された時）に実行される
-  connect() {
-    // モーダル生成
-    this.modal = new Modal(this.element)
+  static targets = [
+    "modal", "question", "select", "label",
+  ]
 
-    // モーダルを表示する
-    this.modal.show()
+  connect() {
+    this.hiddenModal()
   }
 
-  // アクション定義
-  // 保存成功時にモーダルを閉じる
-  close(event) {
-    // event.detail.successは、レスポンスが成功ならtrueを返す
-    // バリデーションエラー時はモーダルを閉じたくないので、成功時のみ閉じる
-    if (event.detail.success) {
-      // モーダルを閉じる
-      this.modal.hide()
+  startModal(event) {
+    event.preventDefault()
+
+    this.currentModalIndex = Number(event.currentTarget.dataset.buttonNumber)
+    this.showModal()
+    this.createQuestion()
+  }
+
+  showModal() {
+    this.modalTarget.style.display = "block"
+  }
+
+  hiddenModal() {
+    this.modalTarget.style.display = "none"
+  }
+
+  createQuestion() {
+    // 初期化
+    this.questionTarget.innerHTML = ""
+
+    const options = Array.from(this.selectTargets[this.currentModalIndex].options).map(option => ({
+      text: option.text,
+      value: option.value,
+    }))
+
+    const questionTarget = this.questionTarget
+
+    const question = document.createElement("p")
+    question.textContent = this.labelTargets[this.currentModalIndex].textContent
+
+    questionTarget.appendChild(question)
+
+    options.forEach((option) => {
+      const button = document.createElement("button")
+
+      // `select`メソッドを呼び出すための属性
+      button.setAttribute("data-action", "modal#select")
+      button.setAttribute("data-value", option.value)
+      button.textContent = option.text
+
+      questionTarget.appendChild(button)
+    })
+  }
+
+  select(event) {
+    this.selectTargets[this.currentModalIndex].value = event.target.dataset.value || ""
+    this.next()
+  }
+
+  next() {
+    this.currentModalIndex++
+
+    if (this.currentModalIndex < this.labelTargets.length) {
+      this.createQuestion()
+    } else {
+      this.hiddenModal()
     }
+  }
+
+  close() {
+    this.hiddenModal()
   }
 }

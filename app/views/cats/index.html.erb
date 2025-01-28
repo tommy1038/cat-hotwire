@@ -1,92 +1,125 @@
-<!-- 見出し -->
-<h4 class="fw-bold">
-  <span class="me-1">🐱</span>
-  <span>ねこ</span>
-</h4>
+<div data-controller="modal">
+  <!-- フォーム -->
+  <%= form_with model: @cat, local: true do |form| %>
+    <%= form.label :name, "1. 名前は？", data: { modal_target: "label" } %>
+    <%= form.select :name,
+      [["--選択してください--", ""], ["太郎", "太郎"], ["花子", "花子"], ["次郎", "次郎"], ["三郎", "三郎"]],
+      { include_blank: false },
+      data: { modal_target: "select", action: "mousedown->modal#startModal", button_number: 0 } %>
 
-<!-- 検索フォーム -->
-<div class="card shadow mt-3">
-  <div class="card-header">
-    <%= icon_with_text("plus-circle", "新規作成") %>
-    <% if false %>
-      <%= icon_with_text("search", "検索条件") %>
-    <% end %>
-  </div>
+    <%= form.label :age, "2. 年齢は？", data: { modal_target: "label" } %>
+    <%= form.select :age,
+      [["--選択してください--", ""], ["10代", "10"], ["20代", "20"], ["30代", "30"], ["40代以上", "40"]],
+      { include_blank: false },
+      data: { modal_target: "select", action: "mousedown->modal#startModal", button_number: 1 } %>
 
-  <div class="card-body">
-    <%= bootstrap_form_with(model: Cat.new, data: { action: "" }) do |form| %>
-      <div class="row g3 mb-3">
-        <div class="col-4 col-xl-2">
-          <%= form.text_field :name %>
-        </div>
-        <div class="col-4 col-xl-2">
-          <%= form.text_field :age %>
-        </div>
-        <div class="col-4 d-flex align-items-end mb-3">
-          <%= form.primary %>
-        </div>
+    <%= form.submit "保存", class: "save-button" %>
+  <% end %>
+
+  <!-- モーダル -->
+  <div data-modal-target="modal" class="modal">
+    <div class="modal-content">
+      <button data-action="modal#close" class="modal-close-link" aria-label="閉じる">&times;</button>
+      <div data-modal-target="question">
+        <!-- 名前の選択肢はここに動的に追加されます -->
       </div>
-    <% end%>
+    </div>
+  </div>
+</div>
 
-    <% if false %>
-      <!-- 以下のコードは、検索フォームの例です -->
-      <%= search_form_for(
-        @search,
-        html: {
-          data: {
-            turbo_frame: "cats-list",
-            controller: "form",
-            turbo_action: :advance,
-          }
-        }) do |f| %>
+<% if false %>
+
+  <!-- 見出し -->
+  <h4 class="fw-bold">
+    <span class="me-1">🐱</span>
+    <span>ねこ</span>
+  </h4>
+
+  <!-- 検索フォーム -->
+  <div class="card shadow mt-3">
+    <div class="card-header">
+      <%= icon_with_text("plus-circle", "新規作成") %>
+      <% if false %>
+        <%= icon_with_text("search", "検索条件") %>
+      <% end %>
+    </div>
+
+    <div class="card-body">
+      <%= bootstrap_form_with(model: Cat.new, data: { action: "" }) do |form| %>
         <div class="row g3 mb-3">
           <div class="col-4 col-xl-2">
-            <%= f.label :name_cont, "名前", class: "form-label" %>
-            <%= f.search_field :name_cont, class: "form-control", data: { action: "input->form#submit" } %>
+            <%= form.text_field :name %>
           </div>
           <div class="col-4 col-xl-2">
-            <%= f.label :age_eq, "年齢", class: "form-label" %>
-            <%= f.search_field :age_eq, class: "form-control", data: { action: "input->form#submit" } %>
+            <%= form.text_field :age %>
           </div>
-          <div class="col-4 d-flex align-items-end">
-            <%= link_to "リセット", cats_path, class: "btn btn-outline-secondary" %>
+          <div class="col-4 d-flex align-items-end mb-3">
+            <%= form.primary %>
           </div>
+        </div>
+      <% end%>
+
+      <% if false %>
+        <!-- 以下のコードは、検索フォームの例です -->
+        <%= search_form_for(
+          @search,
+          html: {
+            data: {
+              turbo_frame: "cats-list",
+              controller: "form",
+              turbo_action: :advance,
+            }
+          }) do |f| %>
+          <div class="row g3 mb-3">
+            <div class="col-4 col-xl-2">
+              <%= f.label :name_cont, "名前", class: "form-label" %>
+              <%= f.search_field :name_cont, class: "form-control", data: { action: "input->form#submit" } %>
+            </div>
+            <div class="col-4 col-xl-2">
+              <%= f.label :age_eq, "年齢", class: "form-label" %>
+              <%= f.search_field :age_eq, class: "form-control", data: { action: "input->form#submit" } %>
+            </div>
+            <div class="col-4 d-flex align-items-end">
+              <%= link_to "リセット", cats_path, class: "btn btn-outline-secondary" %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- 一覧 -->
+  <div class="card shadow mt-3">
+    <div class="card-header">
+      <%= icon_with_text("table", "一覧") %>
+    </div>
+
+    <div class="card-body mx-3">
+      <%= turbo_frame_tag "cats-list" do %>
+        <div class="row py-2">
+          <div class="col-4 mt-auto">
+            <%= sort_link(@search, :name) %>
+          </div>
+          <div class="col-4 mt-auto">
+            <%= sort_link(@search, :age) %>
+          </div>
+          <div class="col-4 d-flex justify-content-end">
+            <%= link_to icon_with_text("plus-circle", "登録"),
+                        new_cat_path,
+                        class: "btn btn-outline-primary",
+                        data: { turbo_frame: "modal" }
+            %>
+          </div>
+        </div>
+
+        <div id="cats">
+          <%= turbo_frame_tag "cats-page-#{@cats.current_page}" do %>
+            <%= render @cats %>
+            <%= turbo_frame_tag "cats-page-#{@cats.next_page}", loading: :lazy, src: path_to_next_page(@cats) %>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
-  </div>
-</div>
-
-<!-- 一覧 -->
-<div class="card shadow mt-3">
-  <div class="card-header">
-    <%= icon_with_text("table", "一覧") %>
+    </div>
   </div>
 
-  <div class="card-body mx-3">
-    <%= turbo_frame_tag "cats-list" do %>
-      <div class="row py-2">
-        <div class="col-4 mt-auto">
-          <%= sort_link(@search, :name) %>
-        </div>
-        <div class="col-4 mt-auto">
-          <%= sort_link(@search, :age) %>
-        </div>
-        <div class="col-4 d-flex justify-content-end">
-          <%= link_to icon_with_text("plus-circle", "登録"),
-                      new_cat_path,
-                      class: "btn btn-outline-primary",
-                      data: { turbo_frame: "modal" }
-          %>
-        </div>
-      </div>
-
-      <div id="cats">
-        <%= turbo_frame_tag "cats-page-#{@cats.current_page}" do %>
-          <%= render @cats %>
-          <%= turbo_frame_tag "cats-page-#{@cats.next_page}", loading: :lazy, src: path_to_next_page(@cats) %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-</div>
+<% end %>

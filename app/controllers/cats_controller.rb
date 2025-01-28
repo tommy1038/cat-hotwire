@@ -6,6 +6,7 @@ class CatsController < ApplicationController
     @search = Cat.ransack(params[:q])
     @search.sorts = "id desc" if @search.sorts.empty?
     @cats = @search.result.page(params[:page])
+    @cat = Cat.new
   end
 
   # GET /cats/1
