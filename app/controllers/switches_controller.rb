@@ -1,14 +1,19 @@
 class SwitchesController < ApplicationController
-  def create
-    case params[:switch]
-    when "tab1"
-      render partial: "switches/tab1", locals: { content: "Tab 1 Content" }
-    when "tab2"
-      render partial: "switches/tab2", locals: { content: "Tab 2 Content" }
-    when "tab3"
-      render partial: "switches/tab3", locals: { content: "Tab 3 Content" }
-    else
-      # render partial: "switches/default", locals: { content: "Default Content" }
+  def index
+    puts "turbo_frame_request?: #{turbo_frame_request?}"
+    puts request.headers["Turbo-Frame"]
+
+    if turbo_frame_request? # Turbo Frame のリクエストかどうかを確認
+      case params[:tab]
+      when "tab1"
+        render partial: "tab1"
+      when "tab2"
+        render partial: "tab2"
+      when "tab3"
+        render partial: "tab3"
+      else
+        head :not_found
+      end
     end
   end
 end
