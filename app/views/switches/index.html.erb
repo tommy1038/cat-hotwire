@@ -1,0 +1,18 @@
+<div class="tabs">
+  <ul>
+    <li>
+      <%= link_to "Tab 1", switches_path(tab: "tab1"), data: { turbo_frame: "tab_content" } %>
+    </li>
+    <li>
+      <%= link_to "Tab 2", switches_path(tab: "tab2"), data: { turbo_frame: "tab_content" } %>
+    </li>
+    <li>
+      <%= link_to "Tab 3", switches_path(tab: "tab3"), data: { turbo_frame: "tab_content" } %>
+    </li>
+  </ul>
+</div>
+
+<turbo-frame id="tab_content">
+  <!-- 初期状態ではデフォルトのタブ内容を表示 -->
+  <%= render "tab1" %>
+</turbo-frame>
